@@ -189,6 +189,7 @@ svg .gr{stroke:var(--line);stroke-dasharray:3 4} svg .ax{stroke:var(--pu3);strok
 .tip b{color:#e2d4ff;font-weight:600}
 .tip .r{display:flex;gap:8px;align-items:center}.tip .r i{width:9px;height:9px;border-radius:2px;display:inline-block}.tip .r span:last-child{margin-left:auto;font-weight:600;padding-left:10px}
 .tip .tq{opacity:.78;font-size:12px}
+.tip .tri{margin-top:7px;padding-top:7px;border-top:1px solid rgba(255,255,255,.16);font-size:12px;color:#ffe3a3}
 .kpi .val{cursor:default}
 .mapgrid{display:grid;grid-template-columns:minmax(250px,320px) minmax(0,1fr);gap:28px;align-items:start}
 .mapside{display:flex;flex-direction:column;gap:8px}.mapside h3{margin-bottom:0}.mapside .q{margin:0 0 6px}
@@ -505,7 +506,9 @@ function yearVal(mid,y,gp){const m=MID[mid],[gd,gc]=gp==null?[ST.gd,ST.gc]:popPa
 
 /* utilidades de dibujo */
 const tip=$('tip');
-function showTip(h,ev){tip.innerHTML=h;tip.style.display='block';const w=tip.offsetWidth,hh=tip.offsetHeight;let x=ev.clientX+14,y=ev.clientY+14;if(x+w>innerWidth-8)x=ev.clientX-w-14;if(y+hh>innerHeight-8)y=Math.max(8,ev.clientY-hh-14);tip.style.left=x+'px';tip.style.top=y+'px'}
+/* si la cifra trae △, el valor emergente explica en palabras sencillas qué significa */
+const NOTA_TRI='<div class="tri">△ Cifra poco precisa: hay pocas personas encuestadas en este grupo, así que el valor puede cambiar bastante. Tómela con cautela.</div>';
+function showTip(h,ev){if(h.includes('△')&&!h.includes('class="tri"'))h+=NOTA_TRI;tip.innerHTML=h;tip.style.display='block';const w=tip.offsetWidth,hh=tip.offsetHeight;let x=ev.clientX+14,y=ev.clientY+14;if(x+w>innerWidth-8)x=ev.clientX-w-14;if(y+hh>innerHeight-8)y=Math.max(8,ev.clientY-hh-14);tip.style.left=x+'px';tip.style.top=y+'px'}
 function hideTip(){tip.style.display='none'}
 function hov(el,h){el.addEventListener('mousemove',ev=>showTip(typeof h==='function'?h():h,ev));el.addEventListener('mouseleave',hideTip)}
 function axis(hi){hi=Math.max(hi,1e-9);const raw=hi*1.06/4,e=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/e,st=(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*e;const mx=Math.ceil(hi*1.04/st)*st;const tk=[];for(let v=0;v<=mx+st*1e-6;v+=st)tk.push(+v.toFixed(10));return {hi:mx,tk}}
